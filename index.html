@@ -774,6 +774,7 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 /* ====================================================================== right: floor team */
 
 .bhq-team, .bhq-card { min-height: 0; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.bhq-team { flex: 0 1 auto; max-height: 48%; }
 .bhq-team > *, .bhq-card > * { pointer-events: auto; }
 
 /* the team card (the wallpaper's): the floor, one big number, the two counts that matter */
@@ -865,6 +866,47 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 }
 .bhq-step-row:first-child span { color: var(--hi); }
 .bhq-step-empty { color: var(--mid); font: 700 12.5px/1.4 var(--bhq-round); }
+
+.bhq-rblock { margin-top: 18px; padding-bottom: 12px; }
+.bhq-crlist { display: flex; flex-direction: column; margin-top: 8px; }
+.bhq-crrow { padding: 8px 0; }
+.bhq-crrow + .bhq-crrow { box-shadow: 0 -1px 0 rgba(255, 255, 255, .07); }
+.bhq-crtop { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.bhq-crname { font: 900 13.5px/1.25 var(--bhq-round); color: var(--hi); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bhq-crnext { flex: none; font: 900 12px/1.25 var(--bhq-round); color: var(--hi); white-space: nowrap; }
+.bhq-crmeta { margin-top: 3px; color: var(--mid); font: 800 12px/1.3 var(--bhq-round); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bhq-crfacts { display: flex; align-items: center; gap: 8px; margin-top: 5px; font: 800 11.5px/1 var(--bhq-round); color: var(--mid); }
+.bhq-crlast { white-space: nowrap; }
+.bhq-rstate, .bhq-crres {
+  display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 999px;
+  background: rgba(255, 255, 255, .08); color: var(--mid); font: 800 11px/1 var(--bhq-round); white-space: nowrap; text-transform: lowercase;
+}
+.bhq-rstate[data-s="on"], .bhq-crres[data-s="ok"] { background: rgba(52, 199, 89, .22); color: #C8F5D4; }
+.bhq-rstate[data-s="paused"] { background: rgba(255, 255, 255, .1); color: var(--mid); }
+.bhq-rstate[data-s="not reported"] { background: rgba(255, 255, 255, .06); color: var(--dim); }
+.bhq-crres[data-s="error"] { background: rgba(255, 69, 58, .22); color: #FFB8BF; }
+.bhq-crres[data-s="running"] { background: rgba(52, 199, 89, .22); color: #C8F5D4; }
+.bhq-crres[data-s="skipped"] { background: rgba(255, 159, 10, .2); color: #FFD28E; }
+
+/* all-automations table: under the floor team, fills leftover height on the right */
+.bhq-atable { min-height: 0; flex: 1 1 160px; display: flex; flex-direction: column; pointer-events: none; margin-top: 8px; }
+.bhq-atable > * { pointer-events: auto; }
+.bhq-atable-card { min-height: 0; flex: 1 1 auto; display: flex; flex-direction: column; border-radius: 24px; padding: 14px 10px 10px; }
+.bhq-atable-head { flex: none; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 8px 8px; }
+.bhq-atable-scroll { min-height: 0; flex: 1 1 auto; overflow: auto; }
+.bhq-atable-table { width: 100%; border-collapse: collapse; font: 800 11.5px/1.3 var(--bhq-round); }
+.bhq-atable-table th {
+  position: sticky; top: 0; z-index: 1; text-align: left; padding: 6px 8px;
+  color: var(--dim); font: 800 10px/1 var(--bhq-round); letter-spacing: .04em; text-transform: uppercase;
+  background: #2A2A2E; white-space: nowrap;
+}
+.bhq-atable-table td { padding: 7px 8px; color: var(--mid); vertical-align: middle; white-space: nowrap; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+.bhq-atable-table .bhq-at-bot, .bhq-atable-table .bhq-at-name { color: var(--hi); font-weight: 900; }
+.bhq-atable-table tbody tr { cursor: pointer; }
+.bhq-atable-table tbody tr:hover { background: rgba(255, 255, 255, .06); }
+.bhq-atable-table tbody tr + tr { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07); }
+.bhq-atable-table tr.is-missing td { color: var(--dim); }
+.bhq-atable-foot { flex: none; margin: 8px 8px 2px; color: var(--dim); font: 800 11.5px/1.3 var(--bhq-round); }
 
 .bhq-cta {
   width: 100%; height: 44px; border-radius: 999px; background: #F2F2F7; color: #1D1D22;
@@ -1236,6 +1278,9 @@ html.bhq-phone body { overscroll-behavior: none; -webkit-tap-highlight-color: tr
 
 /* ---------- the bot card: a sheet over the bottom ---------- */
 .bhq-phone #panel { left: 0; right: 0; width: auto; top: auto; bottom: 0; max-height: none; z-index: 22; }
+.bhq-phone .bhq-team { max-height: none; flex: none; }
+.bhq-phone .bhq-atable { flex: none; margin-top: 0; max-height: none; }
+.bhq-phone .bhq-atable-card { max-height: 260px; }
 .bhq-phone .bhq-card {
   position: relative; gap: 0; pointer-events: auto; overflow: hidden;
   max-height: 64vh; max-height: 64dvh;
