@@ -495,8 +495,25 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 
 @keyframes hqt-in { from { opacity: 0; transform: translateY(4px) scale(.94); } to { opacity: 1; transform: none; } }
 
+/* input-needed badge, always visible over the blob even when the status pill is off */
+.hqt-need {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(180deg, #8AA0FF, #3D5EF0);
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff, 0 3px 10px rgba(61, 94, 240, .5);
+  pointer-events: none; user-select: none;
+}
+.hqt-need svg { display: block; }
+@keyframes hqt-need-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+.hqt-need { animation: hqt-need-pulse 1.6s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   .hqt > * { animation: none; }
+  .hqt-need { animation: none; }
   .hq-loading-track > i { animation: none; width: 100%; opacity: .3; }
 }
 
@@ -555,6 +572,7 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 :where(#topbar, #floors, #panel, #feed, .bhq-dock, .bhq-sheet) [data-s="working"] { --s: #34C759; }
 :where(#topbar, #floors, #panel, #feed, .bhq-dock, .bhq-sheet) [data-s="idle"] { --s: #8E8E93; }
 :where(#topbar, #floors, #panel, #feed, .bhq-dock, .bhq-sheet) [data-s="waiting_user"] { --s: #FFB020; }
+:where(#topbar, #floors, #panel, #feed, .bhq-dock, .bhq-sheet) [data-s="input"] { --s: #6B8CFF; }
 :where(#topbar, #floors, #panel, #feed, .bhq-dock, .bhq-sheet) [data-s="error"] { --s: #FF453A; }
 :where(#topbar, #floors, #panel, #feed, .bhq-dock, .bhq-sheet) [data-s="stuck"] { --s: #FF9F0A; }
 :where(#topbar, #floors, #panel, #feed, .bhq-dock, .bhq-sheet) [data-s="done"] { --s: #8FA2FF; }
@@ -775,7 +793,7 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 /* ====================================================================== right: floor team */
 
 .bhq-team, .bhq-card { min-height: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-.bhq-team { flex: 0 1 auto; max-height: 32%; }
+.bhq-team { flex: 0 1 auto; max-height: 22%; }
 .bhq-team > *, .bhq-card > * { pointer-events: auto; }
 
 /* the team card (the wallpaper's): the floor, one big number, the two counts that matter */
@@ -890,6 +908,24 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 .bhq-crres[data-s="skipped"] { background: rgba(255, 159, 10, .2); color: #FFD28E; }
 
 /* all-automations table: under the floor team, fills leftover height on the right */
+.bhq-npanel { min-height: 0; flex: 1 1 50%; max-height: 58%; display: flex; flex-direction: column; pointer-events: none; }
+.bhq-npanel > * { pointer-events: auto; }
+.bhq-npanel-card { min-height: 0; flex: 1 1 auto; display: flex; flex-direction: column; border-radius: 24px; padding: 12px 8px 8px; }
+.bhq-npanel-head { flex: none; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 10px 8px; }
+.bhq-npanel-head .bhq-dcount { margin-left: auto; }
+.bhq-npanel-body {
+  min-height: 0; flex: 1 1 auto; overflow: auto; padding: 0 6px 4px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; align-content: start;
+}
+.bhq-npanel-body .bhq-needsec { min-width: 0; min-height: 0; overflow: auto; margin-top: 0; }
+.bhq-npanel-body .bhq-needsec.is-solo { grid-column: 1 / -1; }
+.bhq-npanel-body .bhq-note { grid-column: 1 / -1; }
+.bhq-npanel .bhq-wrow { padding: 8px 10px 8px 8px; gap: 8px; border-radius: 16px; }
+.bhq-npanel .bhq-wwhat { -webkit-line-clamp: 3; line-clamp: 3; }
+.bhq-npanel .bhq-wbtn { margin-top: 5px; }
+
+.bhq-phone .bhq-npanel { display: none; }
+
 .bhq-atable { min-height: 0; flex: 1 1 0; display: flex; flex-direction: column; pointer-events: none; margin-top: 8px; }
 .bhq-atable > * { pointer-events: auto; }
 .bhq-atable-card { min-height: 0; flex: 1 1 auto; display: flex; flex-direction: column; border-radius: 24px; padding: 14px 10px 10px; }
@@ -950,15 +986,16 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 .bhq-zbtn:active { transform: scale(.88); }
 .bhq-zoom .bhq-sep { height: 14px; }
 
-/* ====================================================================== dock: waiting on me / finished / routines
+/* ====================================================================== dock: waiting on you / finished / routines
    Three slim cards under the floors; each folds to its header. ui.js sets top and max-height (below the floors, above the feed). */
 
 .bhq-dock {
-  position: fixed; z-index: 20; left: var(--gutter, 24px); top: 380px;
-  width: min(320px, calc(100vw - 2 * var(--gutter, 24px)));
+  position: fixed; z-index: 20; left: var(--gutter, 24px); top: 210px;
+  width: min(380px, calc(100vw - 2 * var(--gutter, 24px)));
   display: flex; flex-direction: column; gap: 8px; pointer-events: none;
 }
 .bhq-dcard { flex: 0 1 auto; min-height: 44px; border-radius: 22px; display: flex; flex-direction: column; pointer-events: auto; }
+html:not(.bhq-phone) .bhq-dcard[data-dock="waiting"] { display: none !important; }
 .bhq-dcard.is-open.has-rows { min-height: 140px; }
 
 .bhq-dh { position: relative; flex: none; }
@@ -974,6 +1011,7 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
   background: rgba(255, 255, 255, .12); color: var(--mid); font: 900 11.5px/1 var(--bhq-round); transition: background-color .3s, color .3s;
 }
 .bhq-dcount[data-s="waiting_user"] { background: linear-gradient(90deg, rgba(255, 178, 58, .5), rgba(255, 178, 58, .34)); color: #FFF0CC; }
+.bhq-dcount[data-s="input"] { background: linear-gradient(90deg, rgba(107, 140, 255, .55), rgba(107, 140, 255, .36)); color: #E8ECFF; }
 .bhq-dcount[data-s="error"] { background: linear-gradient(90deg, rgba(255, 74, 94, .55), rgba(255, 74, 94, .38)); color: #FFE9EB; }
 .bhq-chev {
   position: absolute; right: 14px; top: 50%; width: 16px; height: 16px; margin-top: -8px; color: var(--mid); pointer-events: none;
@@ -997,25 +1035,77 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 .bhq-dbody-in { min-height: 0; overflow: hidden; padding: 0 8px; opacity: 0; transition: opacity .3s ease, padding .5s var(--bhq-sheet); }
 .bhq-dcard.is-open .bhq-dbody-in { overflow-y: auto; padding: 0 8px 8px; opacity: 1; transition-delay: .06s, 0s; }
 
-/* waiting on me: one tinted tile per bot (amber = waiting, red = error); the eye blurs them for the camera */
+/* waiting on you: input (indigo) vs action (amber); the eye blurs the sections for the camera */
+.bhq-needsec { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; transition: filter .35s var(--bhq-ease), opacity .35s; }
+.bhq-needsec + .bhq-needsec { margin-top: 10px; }
+.bhq-needsec-h {
+  display: flex; align-items: center; gap: 8px; padding: 2px 6px 4px;
+  color: var(--hi); font: 900 12px/1 var(--bhq-round); letter-spacing: -.005em;
+}
+.bhq-needsec[data-kind="input"] .bhq-needsec-h { color: #C9D4FF; }
+.bhq-needsec[data-kind="action"] .bhq-needsec-h { color: #FFD28E; }
+.bhq-needico { flex: none; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; color: #fff; }
+.bhq-needsec[data-kind="input"] .bhq-needico,
+.bhq-cnrow[data-kind="input"] .bhq-needico { background: linear-gradient(180deg, #8AA0FF, #4E6EF2); box-shadow: 0 1px 4px rgba(78, 110, 242, .4); }
+.bhq-needsec[data-kind="action"] .bhq-needico,
+.bhq-cnrow[data-kind="action"] .bhq-needico { background: linear-gradient(180deg, #FFC14A, #E39400); box-shadow: 0 1px 4px rgba(227, 148, 0, .4); }
+.bhq-needico svg { display: block; }
+.bhq-needsec-t { flex: 1; min-width: 0; }
+.bhq-needsec-n {
+  min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; display: grid; place-items: center;
+  font: 900 10.5px/1 var(--bhq-round);
+}
+.bhq-needsec[data-kind="input"] .bhq-needsec-n { background: rgba(107, 140, 255, .35); color: #E8ECFF; }
+.bhq-needsec[data-kind="action"] .bhq-needsec-n { background: rgba(255, 178, 58, .35); color: #FFF0CC; }
 .bhq-wlist { display: flex; flex-direction: column; gap: 6px; transition: filter .35s var(--bhq-ease), opacity .35s; }
-.bhq-dcard.is-blurred .bhq-wlist { filter: blur(9px); opacity: .85; user-select: none; pointer-events: none; }
+.bhq-dcard.is-blurred .bhq-needsec,
+.bhq-dcard.is-blurred .bhq-wlist,
+.bhq-dcard.is-blurred .bhq-note { filter: blur(9px); opacity: .85; user-select: none; pointer-events: none; }
 .bhq-wrow {
   --base: #51412B; display: flex; align-items: flex-start; gap: 11px; padding: 10px 12px 10px 10px; border-radius: 18px;
   background: linear-gradient(90deg, rgba(255, 178, 58, .3), rgba(255, 178, 58, .11));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+}
+.bhq-wrow[data-s="input"], .bhq-wrow[data-kind="input"] {
+  --base: #2E3658; background: linear-gradient(90deg, rgba(107, 140, 255, .34), rgba(107, 140, 255, .11));
 }
 .bhq-wrow[data-s="error"] { --base: #532D34; background: linear-gradient(90deg, rgba(255, 74, 94, .32), rgba(255, 74, 94, .11)); }
 .bhq-wrow .bhq-ava { width: 36px; height: 36px; margin-top: 1px; }
 .bhq-wmain { flex: 1; min-width: 0; }
 .bhq-wtop { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 26px; }
 .bhq-wname { font: 900 14px/1.2 var(--bhq-round); color: var(--hi); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bhq-wwait { flex: none; color: var(--mid); font: 800 11px/1 var(--bhq-round); white-space: nowrap; }
+.bhq-wwhat, .bhq-cnwhat {
+  margin-top: 2px; color: #FFD28E; font: 800 12.5px/1.35 var(--bhq-round); overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden;
+}
+.bhq-wrow[data-s="input"] .bhq-wwhat, .bhq-cnrow[data-kind="input"] .bhq-cnwhat { color: #C9D4FF; }
+.bhq-wrow[data-s="error"] .bhq-wwhat { color: #FFB8BF; }
+.bhq-wblocks {
+  margin-top: 3px; color: var(--mid); font: 700 11.5px/1.3 var(--bhq-round); overflow-wrap: anywhere;
+}
 .bhq-wtext {
   margin-top: 1px; color: #FFD28E; font: 800 12.5px/1.35 var(--bhq-round); overflow-wrap: anywhere;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
 }
 .bhq-wrow[data-s="error"] .bhq-wtext { color: #FFB8BF; }
 .bhq-wtext b { color: var(--hi); font-weight: 900; }
+.bhq-wrow .bhq-wbtn { margin-top: 7px; }
+
+/* bot card: that bot's waiting-on-you items */
+.bhq-nblock { margin-top: 4px; padding-bottom: 4px; }
+.bhq-cnlist { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.bhq-cnrow {
+  padding: 10px 12px; border-radius: 16px;
+  background: linear-gradient(90deg, rgba(255, 178, 58, .28), rgba(255, 178, 58, .10));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+}
+.bhq-cnrow[data-kind="input"] { background: linear-gradient(90deg, rgba(107, 140, 255, .32), rgba(107, 140, 255, .10)); }
+.bhq-cnrow[data-s="error"] { background: linear-gradient(90deg, rgba(255, 74, 94, .30), rgba(255, 74, 94, .10)); }
+.bhq-cntop { display: flex; align-items: center; gap: 8px; }
+.bhq-cnkind { flex: 1; min-width: 0; font: 900 12px/1 var(--bhq-round); color: var(--hi); }
+.bhq-cnrow[data-kind="input"] .bhq-cnkind { color: #C9D4FF; }
+.bhq-cnrow[data-kind="action"] .bhq-cnkind { color: #FFD28E; }
 .bhq-wbtn, .bhq-roff {
   flex: none; height: 26px; padding: 0 11px; border-radius: 13px; display: inline-flex; align-items: center; gap: 5px;
   background: rgba(255, 255, 255, .16); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18);
@@ -1125,7 +1215,7 @@ html.wallpaper.wp-tags .hq-labels { display: block; }
 /* ====================================================================== phones
    <html class="bhq-phone"> (ui.js, <= 600 px wide or a landscape phone) turns the cards into a native-feeling layout:
    one compact top row, the floors as a chip row, ONE bottom sheet (grabber, peek, ~60% open) that holds the floor team,
-   Waiting on me, Finished, Routines and the feed, a sheet for the bot card, the zoom buttons riding above whichever
+   Waiting on you, Finished, Routines and the feed, a sheet for the bot card, the zoom buttons riding above whichever
    sheet is up, and the 3D view fitted into the free space between the chips and the sheet.
    Vertical stack, top to bottom: safe area, top row 62, chip row 56, the view, the sheet. Touch targets are >= 44 px. */
 
